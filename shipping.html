@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF Burton-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Shipping – Mystery Mail</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="js/shipping.js" defer></script>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="container">
+      <div class="logo"><img src="assets/logo.png" alt=""></div>
+      <div>
+        <a href="index.html">Home</a>
+        <a href="pricing.html" class="btn-nav">Pricing</a>
+        <a href="leaderboard.html">Leaderboard</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="container">
+    <h1 style="text-align:center; margin:60px 0;">Enter Your Shipping Address</h1>
+    <p style="text-align:center;">We’ll send your first case here. Pay only after.</p>
+
+    <form id="shippingForm" class="submit-form">
+
+      <!-- BEAUTIFUL PLAN BOX -->
+      <div id="planBox" style="
+        margin: 20px 0;
+        padding: 18px;
+        background: linear-gradient(135deg, #1a1a1a, #2a2a2a);
+        border: 2px solid #ff4d4d;
+        border-radius: 12px;
+        text-align: center;
+        font-size: 1.1rem;
+        font-weight: bold;
+        color: #fff;
+        box-shadow: 0 4px 15px rgba(255, 77, 77, 0.2);
+      ">
+        <div style="color: #ff4d4d; margin-bottom: 8px;">Selected Plan</div>
+        <div id="planDisplay" style="font-size: 1.3rem; color: #fff;">Loading...</div>
+      </div>
+
+      <input type="text" id="name" placeholder="Full Name" required />
+      <input type="email" id="email" placeholder="Email" required />
+      <input type="text" id="address1" placeholder="Address Line 1" required />
+      <input type="text" id="address2" placeholder="Address Line 2" />
+      <input type="text" id="city" placeholder="City" required />
+      <input type="text" id="state" placeholder="State" required />
+      <input type="text" id="postal" placeholder="Postal Code" required />
+      <input type="text" id="country" placeholder="Country" required />
+
+      <!-- Hidden inputs -->
+      <input type="hidden" id="plan" />
+      <input type="hidden" id="caseMonth" value="Nov 2025" />
+
+      <button type="submit" class="btn btn-primary">Continue to Payment</button>
+    </form>
+
+    <p id="result" style="text-align:center; margin:20px 0;"></p>
+  </section>
+
+  <footer>
+    <p>No payment yet. Secure & private.</p>
+  </footer>
+
+</body>
+</html>

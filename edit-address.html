@@ -1,0 +1,53 @@
+// js/edit-address.js
+const AIRTABLE_TOKEN = 'patexRIpq121dAkNv.c89f5acafb91f5cb2cae096a0be786633f4a2d814208c8c2cd8b2a667436255a';
+const BASE_ID = 'appvRPSQFOT42Xbo5';
+const TABLE = 'Subscribers';
+
+const urlParams = new URLSearchParams(window.location.search);
+const token = urlParams.get('token');
+
+if (!token) {
+  document.getElementById('result').innerHTML = '<p style="color:red;">Invalid or expired link.</p>';
+}
+
+document.getElementById('editForm').addEventListener('submit', async (e) => {
+  e.preventDefault();
+  const result = document.getElementById('result');
+  result.textContent = 'Updating...';
+
+  const data = {
+    Name: document.getElementById('name').value,
+    Address1: document.getElementById('address1').value,
+    Address2: document.getElementById('address2').value,
+    City: document.getElementById('city').value,
+    State: document.getElementById('state').value,
+    Postal: document.getElementById('postal').value,
+    Country: document.getElementById('country').value
+  };
+
+  try {
+    const res = await fetch(`https://api.airtable.com/v3/bases/${BASE_ID}/tables/${TABLE}/records?filterByFormula={EditToken}='${token}'`, {
+      headers: { 'Authorization': `Bearer ${AIRTABLE_TOKEN}` }
+    });
+    const json = await res.json();
+    const record = json.records[0];
+    if (!record) throw new Error();
+
+    await fetch(`https://api.airtable.com/v3/bases/${BASE_ID}/tables/${TABLE}/records`, {
+      method: 'PATCH',
+      headers: {
+        'Authorization': `Bearer ${AIRTABLE_TOKEN}`,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({
+        records: [{ id: record.id, fields: data }]
+      })
+    });
+
+    result.style.color = 'green';
+    result.textContent = 'Address updated successfully!';
+  } catch (err) {
+    result.style.color = 'red';
+    result.textContent = 'Error. Try again or contact support.';
+  }
+});

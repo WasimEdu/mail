@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Pricing – Mystery Mail</title>
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="js/main.js" defer></script>
+</head>
+<body>
+
+  <nav class="nav">
+    <div class="container">
+      <div class="logo"><img src="assets/logo.png" alt=""></div>
+      <div>
+        <a href="index.html">Home</a>
+        <a href="pricing.html" class="btn-nav">Pricing</a>
+        <a href="leaderboard.html">Leaderboard</a>
+      </div>
+    </div>
+  </nav>
+
+  <section class="container">
+    <h1 style="text-align:center; margin:60px 0;">Choose Your Rank</h1>
+
+    <!-- CURRENCY SWITCH -->
+    <div class="currency-switch">
+      <button class="switch-btn active" data-currency="intl">International ($)</button>
+      <button class="switch-btn" data-currency="in">India (₹)</button>
+    </div>
+
+    <!-- PRICING TIERS -->
+    <div class="pricing" id="pricing-tiers">
+      <!-- ROOKIE -->
+      <div class="tier">
+        <div>
+          <h2>Rookie</h2>
+          <div class="price">
+            <span class="intl active">$19.99</span>
+            <span class="in hidden">₹1,499</span>
+            <small>/month</small>
+          </div>
+          <ul>
+            <li>1 Case per month</li>
+            <li>Bookmark + Sticker</li>
+            <li>QR submission</li>
+          </ul>
+        </div>
+        <a href="#" class="btn btn-primary" data-plan="rookie">Subscribe</a>
+      </div>
+
+      <!-- DETECTIVE -->
+      <div class="tier popular">
+        <div class="badge">POPULAR</div>
+        <div>
+          <h2>Detective</h2>
+          <div class="price">
+            <span class="intl active">$29.99</span>
+            <span class="in hidden">₹2,199</span>
+            <small>/month</small>
+          </div>
+          <ul>
+            <li>Everything in Rookie</li>
+            <li>Bonus physical clue</li>
+            <li>Early case access</li>
+          </ul>
+        </div>
+        <a href="#" class="btn btn-primary" data-plan="detective">Subscribe</a>
+      </div>
+
+      <!-- MASTER -->
+      <div class="tier">
+        <div>
+          <h2>Master</h2>
+          <div class="price">
+            <span class="intl active">$49.99</span>
+            <span class="in hidden">₹3,799</span>
+            <small>/month</small>
+          </div>
+          <ul>
+            <li>Everything in Detective</li>
+            <li>2 Cases per month</li>
+            <li>Vote on next case</li>
+          </ul>
+        </div>
+        <a href="#" class="btn btn-primary" data-plan="master">Subscribe</a>
+      </div>
+    </div>
+  </section>
+
+  <footer>
+    <p>Powered by Stripe • Cancel anytime</p>
+  </footer>
+
+  <!-- DYNAMIC LINKS SCRIPT -->
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const switchBtns = document.querySelectorAll('.switch-btn');
+      const subscribeBtns = document.querySelectorAll('[data-plan]');
+
+      let currentCurrency = 'intl';
+
+      // Currency switch
+      switchBtns.forEach(btn => {
+        btn.addEventListener('click', () => {
+          switchBtns.forEach(b => b.classList.remove('active'));
+          btn.classList.add('active');
+          currentCurrency = btn.dataset.currency;
+          localStorage.setItem('mysterymail_currency', currentCurrency);
+          updateSubscribeLinks();
+        });
+      });
+
+      // Restore saved currency
+      const saved = localStorage.getItem('mysterymail_currency') || 'intl';
+      currentCurrency = saved;
+      switchBtns.forEach(b => b.classList.toggle('active', b.dataset.currency === saved));
+
+      // Update links
+      function updateSubscribeLinks() {
+        subscribeBtns.forEach(btn => {
+          const plan = btn.dataset.plan;
+          btn.href = `shipping.html?plan=${plan}&currency=${currentCurrency}`;
+        });
+      }
+
+      updateSubscribeLinks();
+    });
+  </script>
+
+</body>
+</html>

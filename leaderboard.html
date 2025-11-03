@@ -1,0 +1,64 @@
+// js/leaderboard.js
+const AIRTABLE_API_KEY = 'YOUR_AIRTABLE_API_KEY';
+const BASE_ID = 'YOUR_BASE_ID';
+const TABLE = 'Solutions';
+
+const CORRECT_KILLER = "john doe";
+const CORRECT_MOTIVE = "jealousy";
+
+async function loadLeaderboard() {
+  const res = await fetch(`https://api.airtable.com/v0/${BASE_ID}/${TABLE}?filterByFormula=AND({Correct}=TRUE())&sort[0][field]=TimeMins&sort[0][direction]=asc`, {
+    headers: { 'Authorization': `Bearer ${AIRTABLE_API_KEY}` }
+  });
+  const data = await res.json();
+  const tbody = document.getElementById('leaderboard-body');
+  tbody.innerHTML = '';
+
+  data.records.forEach((r, i) => {
+    const row = document.createElement('tr');
+    if (i < 3) row.classList.add(`rank-${i+1}`);
+    row.innerHTML = `
+      <td>#${i+1}</td>
+      <td>${r.fields.DetectiveName}</td>
+      <td>${r.fields.TimeMins}m</td>
+      <td>${r.fields.Badge}</td>
+    `;
+    tbody.appendChild(row);
+  });
+}
+
+document.getElementById('submitBtn').addEventListener('click', async () => {
+  const name = document.getElementById('detectiveName').value.trim();
+  const killer = document.getElementById('killer').value.trim().toLowerCase();
+  const motive = document.getElementById('motive').value.trim().toLowerCase();
+  const result = document.getElementById('result');
+
+  if (!name || !killer || !motive) {
+    result.textContent = "Fill all!";
+    return;
+  }
+
+  const isCorrect = killer === CORRECT_KILLER && motive === CORRECT_MOTIVE;
+  const submitted = new Date().toISOString();
+  const timeMins = 0; // Airtable formula will calculate
+
+  const payload = {
+    fields: { DetectiveName: name, Killer: killer, Motive: motive, Submitted: submitted, Correct: isCorrect }
+  };
+
+  await fetch(`https://api.airtable.com/v0/${BASE_ID}/${TABLE}`, {
+    method: 'POST',
+    headers: {
+      'Authorization': `Bearer ${AIRTABLE_API_KEY}`,
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify(payload)
+  });
+
+  result.style.color = isCorrect ? 'lime' : 'red';
+  result.textContent = isCorrect ? 'CORRECT! Check leaderboard.' : 'Wrong.';
+  loadLeaderboard();
+});
+
+loadLeaderboard();
+setInterval(loadLeaderboard, 30000);
